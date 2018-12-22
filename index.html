@@ -29,6 +29,277 @@
 					### その４
 					#### 講師:USP友の会 鳥海秀一
 				</section>
+				<section data-markdown>
+					#### 講師： 鳥海秀一
+					* USP友の会の古参会員
+					* シェル芸勉強会午前の部をよく担当
+				</section>
+				<section data-markdown>
+					### お詫びと訂正
+					* 今回で最終回の予定でしたが、見通しが甘すぎました。今回では終わりません
+					* また、今回取り上げると宣言した絵文字ですが、今回は取り上げません
+					* 深く反省し、訂正させていただきます
+					* 引き続き、シェルを使いながら文字コードの学習を進めていく所存ですので、今後ともよろしくお願いします
+				</section>
+				<section data-markdown>
+					### 前回までの振り返り
+				</section>
+				<section data-markdown>
+					### 文字コードとは
+					* 文字集合の各文字に対応する符号を一意に定めたもの
+					* 文字の識別子としての機能のみ扱う
+					* 扱う文字集合の違いやその他の理由により様々な文字コードが存在する
+				</section>
+				<section data-markdown>
+					### 文字コードを学ぶ利点
+					* ずっと役に立つ知識が手に入る
+					* コマンドの使い方を学ぶ素材として優れいてる
+						* 文字コードは単なる整数値
+						* データセットが既に登録済
+						* 結果を文字（フォント）としてすぐに確認できる
+				</section>
+				<section data-markdown>
+					### 取り上げたコマンド
+					* locale
+					* iconv
+					* 文字→数値変換コマンド
+					* 数値→文字変換コマンド
+					* 基数変換コマンド
+				</section>
+				<section data-markdown>
+					### 取り上げた文字コード
+					* EBCDICコード
+					* ASCIIコード
+					* ISO/IEC 646
+					* ISO/IEC 2022
+					* ISO/IEC 8859
+					* JIS X 0201
+					* JIS X 0208
+					* EUC_JP
+					* SHIFT_JIS
+				</section>
+				<section data-markdown>
+					### Unicodeとは(その１)
+					* 世界中の文字を1つの文字集合に収める目的で作られた文字コード
+					* 同じような目的でISOが企画したISO/IEC 10646と1990年代に合流
+				</section>
+				<section data-markdown>
+					### Unicodeとは(その２)
+					* 当初、IEC 10646は31ビットで1文字を表すことを企画し、Unicodeは16ビットで1文字を表すことを企画した
+					* IEC 10646がUnicodeに合流した際に、16ビットで1文字を表すことに統一した
+					* 但し、16ビットに収める案はすぐに破綻し、後に0x000000〜0x10FFFF(欠番あり)の21ビットの文字空間をもつコードとなった
+					* 16ビットで表現可能な領域のことを基本多言語面、それ以外を追加多言語面と呼ぶ
+				</section>
+				<section data-markdown>
+					## 以上
+				</section>
+				<section data-markdown>
+					### シェルで文字コードに触れてみる
+					### その4
+				</section>
+				<section data-markdown>
+					### 参考文献
+					* プログラマのための文字コード技術入門（技術評論社）
+					* ユニコード戦記（電機大出版局）
+				</section>
+				<section data-markdown>
+					### アジェンダ
+					* Unicode用語解説（UCSとUTF）
+					* Unicodeの基本原則
+					* Unicodeの正規化
+					* Unicode Character Database (UCD) 
+					* 結合文字列
+				</section>
+				<section data-markdown>
+					### Unicode用語解説（UCSとは）
+					* ISO/IEC 10646が定義する文字コード集合のこと
+					* Unicodeとほぼ同義で使われる
+					* 接頭辞のU+に続く4桁〜6桁の16進数で表現する
+					* 4バイトの符号のUCS-4とそのサブセットのUCS-2がある
+					* UCS-2では基本多言語面しか表現できない
+				</section>
+				<section data-markdown>
+					### Unicode用語解説(UTFとは)
+					* UCSで文字に対応付けた符号位置をコンピュータが利用できるバイト列に変換する方式のこと
+					* 主要なUTFには次のものがある
+						* UTF-32 (32-bit UCS Transformation Format)
+						* UTF-16 (16-bit UCS Transformation Format)
+						* UTF-8 (8-bit UCS Transformation Format)
+					* UTF-EBCDICなるものもあるらしい
+				</section>
+				<section data-markdown>
+					### UTF-16とは
+					* 基本多言語面（BMP)を16ビットで、それ以外の面を32ビットで表現する符号化方式
+					* 世界中の文字を16ビットに収めるというUnicodeの元々の方針が破綻した際にUCS-2を拡張して作った規格
+					* まだ文字が割り当てられていなかった基本多言語面の領域1024文字分を2つ（サロゲートペア）使うことで、U+10FFFFまでを表現する
+					* U+D800~U+DBFFを上位サロゲート、U+DC00~U+DFFFを下位サロゲートという
+				</section>
+				<section data-markdown>
+					### UTF-16が定めるUnicodeの限界
+					* UTF-32やUTF-8ではUCS-4が定める31ビットの符号位置を表現できるが、UTF-16が表現できる上限（U+10FFFF）がUnicodeの上限と定められている
+					* サロゲートペアで使用したU+D800〜U+DFFFはUnicodeの欠番となっている
+				</section>
+				<section data-markdown>
+					### 問題
+					Unicodeが表現できる文字コード数を計算してみよう
+				</section>
+				<section data-markdown>
+					### UTF-16の計算方法（その１）	
+					* Unicodeの符号位置(n)→UTF-16によるバイト表現
+						* n&lt;0x10000の場合、n
+						* n≧0x10000の場合
+							* 上位16ビット = (n - 0x10000) / 0x400 + 0xD800
+							* 下位16ビット = (n - 0x10000) % 0x400 + 0xDC00
+				</section>
+				<section data-markdown>
+					### UTF-16の計算方法（その２）	
+					* UTF-16によるバイト表現→Unicodeの符号位置(n)
+						* サロゲートペアではない場合
+							* n = UTF-16によるバイト表現
+						* サロゲートペアの場合、
+							* n = (上位16ビット - 0xD800) * 0x400 + (下位16ビット - 0xDC00) + 0x10000
+				</section>
+				<section data-markdown>
+					### UTF-16とバイト順
+					* UTF-16は、16ビット単位の符号
+					* 16ビットのデータを 8ビット単位のバイト列にするときには、上位8ビットから先に並べるか、下位8ビットから先に並べるかが問題となる
+					* 上位8ビットが先頭にくるバイト順をビッグエンディアンという
+					* 下位8ビットが先頭にくるバイト順をリトルエンディアンという
+				</section>
+				<section data-markdown>
+					### UTF-16とバイト順とBOM
+					* ビッグエンディアンのUTF-16をUTF-16BEと呼ぶ
+					* リトルエンディアンのUTF-16をUTF-16LEと呼ぶ
+					* どちらのバイト順を採用しているかを示すために、データの先頭にBOM(Byte Order Mark)と呼ばれる印を付けることができる
+					* BOMにはU+FEFFの符号位置を用いる
+					* BOMがない場合は、ビッグエンディアンにするように決められている
+				</section>
+				<section data-markdown>
+					### BOMについてのトリビア
+					* U+FEFFという符号位置は本来はZERO WIDTH NO-BREAK SPACEという文字
+					* 2つの文字の間での改行を禁じる印として使える
+					* データの先頭でなく途中にU+FEFFが現れた場合には、BOMではなくこの文字として解釈される
+					* 但し、この使い方は推奨されない
+				</section>
+				<section data-markdown>
+					### UTF-32とは
+					* Unicode 符号位置をそのまま32ビットで表現する符号化方式
+					* 上限が0x10FFFFと定められているため、UCS-4のサブセットとなっている
+					* UTF-16と同じように、UTF-32BEとUTF-32LEがあり、BOMを使ってバイト順を示すことができる
+					* Unicodeには結合文字があるため、UTF-32で表現しても１文字＝32ビットとはならない
+				</section>
+				<section data-markdown>
+					### UTF-32の確認
+					* printf A | iconv -f utf-8 -t utf-32be | xxd -p -u
+					* printf A | iconv -f utf-8 -t utf-32le | xxd -p -u
+					* printf A | iconv -f utf-8 -t utf-32 | xxd -p -u
+				</section>
+				<section data-markdown>
+					### UTF-16の確認
+					* printf A | iconv -f utf-8 -t utf-16be | xxd -p -u
+					* printf A | iconv -f utf-8 -t utf-16le | xxd -p -u
+					* printf A | iconv -f utf-8 -t utf-16 | xxd -p -u
+				</section>
+				<section data-markdown>
+					### サロゲートペアの計算式の確認
+					* printf 𠮷 | iconv -f utf-8 -t utf-32be | xxd -p -u | awk '{printf("%04X%04X\n",(strtonum("0x"$1)-0x10000)/0x400+0xD800,(strtonum("0x"$1)-0x10000)%0x400+0xDC00)}' | xxd -p -r | iconv -f utf-16be -t utf-8;echo
+				</section>
+				<section data-markdown>
+					### UTF-8とは
+					* UNIX開発者のケン・トンプソンによって考案された符号化方式
+					* ASCII文字と互換性を持たせるために、ASCIIと同じ部分は1バイト、その他の部分を2〜4バイトで表現する
+					* バイト順に影響を受けないため本来BOMは必要がない
+					* ただし、UTF-8で符号化されていることの標識として、データの先頭にEF BB BF を付加することが許されている
+				</section>
+				<section data-markdown>
+					### BOMつきUTF-8の確認
+					* printf あ | xxd -p -u
+					* printf あ | nkf --oc=UTF-8-BOM | xxd -p -u
+				</section>
+				<section data-markdown>
+					### UTF-8の符号化方式
+					* 1バイト目の先頭の連続するビット "1"（その後にビット "0" が1つ付く）の個数で、その文字のバイト数を表現する
+					* 2バイト目以降はビットパターン "10" で始める
+					* 残りのビットで符号位置を表現する
+					* 1バイト目と2バイト目以降では値の範囲が重ならないので、文字境界を確実に判定できる
+				</section>
+				<section data-markdown>
+					### UTF-8の符号化方式の確認
+					* printf シェル芸勉強会午前の部 | iconv -f utf-8 -t utf-16be | xxd -p -u | fold -4 | sed '1s/^/obase=2;ibase=16;/' | bc | xargs printf '%016d\n' | sed 's/\(....\)\(......\)\(......\)/|1110\1|10\2|10\3/' | tr -d '|' | sed '1s/^/obase=16;ibase=2;/' | bc | xxd -p -r; echo
+				</section>
+				<section data-markdown>
+					### UTF-8の冗長性の問題
+					* UTF-8では１つの符号位置に対応するバイト列が複数存在する
+					* 例えば、U+0021の符号位置は0x21というバイト列にも0xC0 0xA1というバイト列にも対応する
+					* こうした冗長性は、危険な文字列がチェックをすり抜けるセキュリティ上の脅威となリえる
+					* 現在のUTF-8の仕様は最も短いバイト列に符号化することを要求している
+				</section>
+				<section data-markdown>
+					### 符号位置とUTF-8バイト列の対応
+					|符号位置(16進)|UTF-8 のバイト列(2進)|
+					|:-|:-|
+					|00000000~0000007F|0xxxxxxx|
+					|00000080~000007FF|110xxxxx 10xxxxxx|
+					|00000800~0000FFFF|1110xxxx 10xxxxxx 10xxxxxx|
+					|00010000~0010FFFF|11110xxx 10xxxxxx 10xxxxxx 10xxxxxx|
+				</section>
+				<section data-markdown>
+					### 休憩
+				</section>
+				<section data-markdown>
+					### Unicodeの初期の設計原則（一部）
+					* 文字コードはすべて16ビットで表現する
+					* グリフまでは扱わない
+					* 漢字のように異なる言語間で重複している文字は統一する
+					* 動的な合成を可能にする
+					* 既存の文字コードとの間で可逆変換できるようにする
+				</section>
+				<section data-markdown>
+					### 動的な合成とは
+					* ２つ以上の文字コードを並べて１つの文字を表現すること
+					* 例えば、ǖ（U+01D6）は、U+00FC U+0304でも、U+0075 U+0308 U+0304でも表現できる
+					* 結合した複数の文字のことを結合文字列という 
+				</section>
+				<section data-markdown>
+					### 後々出来あがった原則
+					* ダイナミックコンポジションで表現できるものにはプリコンポジションの新たな符号位置は与えない
+				</section>
+				<section data-markdown>
+					### Unicodeのコンポジション
+					* プリコンポジション
+						* 実際に表示される具体的な字形を前もって用意する方式
+					* ダイナミックコンポジション
+						* 実際に表示される具体的な字形を必要になった時点で用意する方式
+				</section>
+				<section data-markdown>
+					### 原則が適用された例
+					* アイヌ語の表記に使う「ト゚」などの文字はJIS X 0213では独自のコードが割り当てられているが、Unicodeには対応する独自のコードがない
+					* 確認
+						* tori$ echo 839E | xxd -p -r | iconv -f shift_jisx0213 -t utf-32be | xxd -p | fold -8
+				</section>
+				<section data-markdown>
+					### プリコンポジション不採用の理由
+					* 世界の文字の中には、インド系文字やアラビア語系の文字などダイナミックコンポジションを前提とした文字がある
+					* これらの文字はいくつもの文字が結合してひとまとまりの視覚表現を構成する
+					* その視覚表現にプリコンポジションで新たな文字コードを与えるのは事実上不可能
+				</section>
+				<section data-markdown>
+					### 文字が結合した視覚表現の例
+					* U+FDFD
+					* 「慈悲深き神の御名に於いて」というコーランのフレーズに与えられた文字コード
+					* 14字形から構成されるアラビア文字
+				</section>
+				<section data-markdown>
+					### 講師の感想
+					* Unicodeにおいて、結合文字列はUnicodeの傍流ではなく本流
+					* Unicodeは、文字コード集合ではなく文字の部品コード集合と考えた方が良い
+				</section>
+				<section data-markdown>
+					### 今回はここまで
+				</section>
+				<section data-markdown>
+					### ご静聴ありがとうございました
+				</section>
 			</div>
 		</div>
 		<script src="lib/js/head.min.js"></script>
