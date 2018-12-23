@@ -268,7 +268,7 @@
 					### 原則が適用された例
 					* アイヌ語の表記に使う「ト゚」などの文字はJIS X 0213では独自のコードが割り当てられているが、Unicodeには対応する独自のコードがない
 					* 確認
-						* tori$ echo 839E | xxd -p -r | iconv -f shift_jisx0213 -t utf-32be | xxd -p | fold -8
+						* echo 839E | xxd -p -r | iconv -f shift_jisx0213 -t utf-32be | xxd -p | fold -8
 				</section>
 				<section data-markdown>
 					### プリコンポジション不採用の理由
